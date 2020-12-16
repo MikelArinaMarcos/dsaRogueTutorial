@@ -9,6 +9,8 @@ public class BoardManager : MonoBehaviour {
 
     public GameObject[] floorTiles, outerWallTiles; // Losetas
 
+    private Transform boardHolder;
+
 
     public void SetUpScene()
     {
@@ -17,6 +19,7 @@ public class BoardManager : MonoBehaviour {
 
     void BoardSetUp()
     {
+        boardHolder = new GameObject("Board").transform;
         for (int x = -1; x < columns + 1; x++)
         {
             for (int y = -1; y < rows + 1; y++)
@@ -28,7 +31,8 @@ public class BoardManager : MonoBehaviour {
                     toInstantiate = GetRandomInArray(outerWallTiles);
                 }
 
-                Instantiate(toInstantiate, new Vector2(x, y), Quaternion.identity);
+                GameObject instance = Instantiate(toInstantiate, new Vector2(x, y), Quaternion.identity);
+                instance.transform.SetParent(boardHolder);
             }
         }
     }
