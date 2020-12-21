@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MovingObject
 {
@@ -65,5 +66,36 @@ public class Player : MovingObject
         }
     }
 
+    void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
+    public void LoseFood(int loss)
+    {
+        food -= loss;
+        animator.SetTrigger("playerHit");
+        CheckIfGameOver();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Exit"))
+        {
+            Invoke("Restart", restartLevelDelay);
+            enabled = false;
+        }
+
+        else if (other.CompareTag("Food"))
+        {
+            food += pointsPerFood;
+            other.gameObject.SetActive(false);
+        }
+
+        else if (other.CompareTag("Soda"))
+        {
+            food += pointsPerSoda;
+            other.gameObject.SetActive(false);
+        }
+    }
 }
