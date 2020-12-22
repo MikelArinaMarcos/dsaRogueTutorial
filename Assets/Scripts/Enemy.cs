@@ -22,15 +22,41 @@ public class Enemy : MovingObject
         base.Start();
     }
 
+    protected override void AttemptMove(int xDir, int yDir)
+    {
+        if (skipMove)
+        {
+            skipMove = false;
+            return;
+        }
+        base.AttemptMove(xDir, yDir);
+        skipMove = true;
+    }
 
+    public void MoveEnemy()
+    {
+        int xDir = 0, yDir = 0;
+
+        if (Mathf.Abs(target.position.x - transform.position.x) < float.Epsilon)
+        {
+            yDir = target.position.y > transform.position.y ? 1 : -1;
+        }
+
+        else
+        {
+            xDir = target.position.x > transform.position.x ? 1 : -1;
+        }
+
+        AttemptMove(xDir, yDir);
+    }
 
     protected override void OnCantMove(GameObject go)
     {
+        Player hitPlayer = go.GetComponent<Player>();
 
+        if (hitPlayer != null)
+        {
+            hitPlayer.LoseFood(playerDamage);
+        }
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
