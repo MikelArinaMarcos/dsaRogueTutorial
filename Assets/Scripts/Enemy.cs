@@ -18,6 +18,7 @@ public class Enemy : MovingObject
 
     protected override void Start()
     {
+        GameManager.instance.AddEnemyToList(this);
         target = GameObject.FindGameObjectWithTag("Player").transform;
         base.Start();
     }
@@ -57,6 +58,7 @@ public class Enemy : MovingObject
         if (hitPlayer != null)
         {
             hitPlayer.LoseFood(playerDamage);
+            animator.SetTrigger("enemyAttack");
         }
     }
 }

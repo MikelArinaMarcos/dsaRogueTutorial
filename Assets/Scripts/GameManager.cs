@@ -5,10 +5,14 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
+    public float turnDelay = 0.1f;
 
     public BoardManager boardScript;
     public int playerFoodPoints = 100;
     [HideInInspector]public bool playersTurn = true;
+
+    private List<Enemy> enemies = new List<Enemy>();
+    private bool enemiesMoving;
 
     private void Awake()
     {
@@ -34,11 +38,45 @@ public class GameManager : MonoBehaviour {
 
     void InitGame()
     {
-        boardScript.SetUpScene(1);
+        enemies.Clear();
+        boardScript.SetUpScene(3);
     }
 
     public void GameOver()
     {
         enabled = false;
+    }
+
+    IEnumerator MoveEnemies()
+    {
+        enemiesMoving = true;
+
+        yield return new WaitForSeconds(turnDelay);
+
+        if (enemies.Count == 0)
+        {
+            yield return new WaitForSeconds(turnDelay);
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            enemies[i].MoveEnemy();
+            yield return new WaitForSeconds(enemies[i].moveTime);
+        }
+
+        playersTurn = true;
+        enemiesMoving = false;
+    }
+
+    private void Update()
+    {
+        if (playersTurn || enemiesMoving) return;
+
+        StartCoroutine(MoveEnemies());
+    }
+
+    public void AddEnemyToList(Enemy enemy)
+    {
+        enemies.Add(enemy);
     }
 }
