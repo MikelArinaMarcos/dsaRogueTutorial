@@ -20,7 +20,6 @@ public abstract class MovingObject : MonoBehaviour {
     protected virtual void Start ()
     {
         movementSpeed = 1f / moveTime;
-    
     }
 	
     protected IEnumerator SmoothMovement(Vector2 end)
