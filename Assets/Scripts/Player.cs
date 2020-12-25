@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MovingObject
 {
@@ -9,6 +10,7 @@ public class Player : MovingObject
     public int pointsPerFood = 10;
     public int pointsPerSoda = 20;
     public float restartLevelDelay = 1f;
+    public Text foodText;
 
     private Animator animator;
     private int food;
@@ -22,6 +24,7 @@ public class Player : MovingObject
     protected override void Start()
     {
         food = GameManager.instance.playerFoodPoints;
+        foodText.text = "Food: " + food;
         base.Start();
     }
 
@@ -38,6 +41,7 @@ public class Player : MovingObject
     protected override void AttemptMove(int xDir, int yDir)
     {
         food--;
+        foodText.text = "Food: " + food;
         base.AttemptMove(xDir, yDir);
         CheckIfGameOver();
         GameManager.instance.playersTurn = false;
@@ -46,7 +50,7 @@ public class Player : MovingObject
 	// Update is called once per frame
 	void Update ()
     {
-        if (!GameManager.instance.playersTurn) return;
+        if (!GameManager.instance.playersTurn || GameManager.instance.doingSetup) return;
 
         int horizontal;
         int vertical;
@@ -74,6 +78,7 @@ public class Player : MovingObject
     public void LoseFood(int loss)
     {
         food -= loss;
+        foodText.text = "- " + loss + " Food:" + food;
         animator.SetTrigger("playerHit");
         CheckIfGameOver();
     }
@@ -89,12 +94,14 @@ public class Player : MovingObject
         else if (other.CompareTag("Food"))
         {
             food += pointsPerFood;
+            foodText.text = "+ " + pointsPerFood + " Food:" + food;
             other.gameObject.SetActive(false);
         }
 
         else if (other.CompareTag("Soda"))
         {
             food += pointsPerSoda;
+            foodText.text = "+ " + pointsPerSoda + " Food:" + food;
             other.gameObject.SetActive(false);
         }
     }
